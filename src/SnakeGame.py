@@ -66,3 +66,14 @@ class SnakeGame:
         
         self.head = Point(x, y)
 
+    def _update_ui(self):
+        self.screen.fill("chartreuse3")
+
+        for point in self.snake:
+            pygame.draw.rect(self.screen, "yellow3", pygame.Rect(point.x, point.y, self.block_size, self.block_size))
+            pygame.draw.rect(self.screen, "yellow", pygame.Rect(point.x + 4, point.y + 4, 12, 12))
+
+        pygame.draw.rect(self.screen, "red", pygame.Rect(self.food.x, self.food.y, self.block_size, self.block_size))
+
+        pygame.display.flip()
+
