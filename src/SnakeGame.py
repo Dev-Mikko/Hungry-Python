@@ -1,5 +1,6 @@
 import pygame
 import random
+from Snake import Snake
 from utils import Direction, Point
 
 class SnakeGame:
@@ -17,18 +18,13 @@ class SnakeGame:
 
         pygame.display.set_caption("Hungry Python")
 
-        # Snake state
-        self.direction = Direction.UP
-        self.head = Point(self.w / 2, self.h / 2)
-        self.snake = [self.head,
-                      Point(self.head.x - self.block_size, self.head.y),
-                      Point(self.head.x - (2 * self.block_size), self.head.y)]
-        
+        self.snake = Snake(Point(self.w / 2, self.h / 2), self.block_size)
+
         # Environment settings
         self.score = 0
         self.food = None
         self._place_food()
-    
+
     def play_game(self):
         # Event handler
         for event in pygame.event.get():
@@ -36,37 +32,37 @@ class SnakeGame:
             if event.type == pygame.KEYDOWN:
                 match event.key:
                     case pygame.K_UP:
-                        if self.direction != Direction.DOWN:
-                            self.direction = Direction.UP
+                        if self.snake.direction != Direction.DOWN:
+                            self.snake.direction = Direction.UP
                     case pygame.K_LEFT:
-                        if self.direction != Direction.RIGHT:
-                            self.direction = Direction.LEFT
+                        if self.snake.direction != Direction.RIGHT:
+                            self.snake.direction = Direction.LEFT
                     case pygame.K_DOWN:
-                        if self.direction != Direction.UP:
-                            self.direction = Direction.DOWN
+                        if self.snake.direction != Direction.UP:
+                            self.snake.direction = Direction.DOWN
                     case pygame.K_RIGHT:
-                        if self.direction != Direction.LEFT:
-                            self.direction = Direction.RIGHT
-        
-        self._move(self.direction)
-        self.snake.insert(0, self.head)
+                        if self.snake.direction != Direction.LEFT:
+                            self.snake.direction = Direction.RIGHT
+
+        self.snake.move(self.snake.direction)
+        self.snake.grow()
 
         game_over = False
         if self._check_collision():
             game_over = True
             return game_over, self.score
 
-        if self.head == self.food:
+        if self.snake.head == self.food:
             self.score += 1
             self._place_food()
         else:
-            self.snake.pop()
+            self.snake.body.pop()
 
         self._update_ui()
         self.clock.tick(self.speed)
 
         return game_over, self.score
-    
+
     def _place_food(self):
         # Generate randomly the food position
         x = random.randint(0, (self.w - self.block_size) // self.block_size) * self.block_size
@@ -74,42 +70,26 @@ class SnakeGame:
         self.food = Point(x, y)
 
         # Avoid to generate food where the snake is located
-        if self.food in self.snake:
+        if self.food in self.snake.body:
             self._place_food()
-    
-    def _move(self, direction):
-        x = self.head.x
-        y = self.head.y
-        
-        match direction:
-            case Direction.UP:
-                y -= self.block_size
-            case Direction.LEFT:
-                x -= self.block_size
-            case Direction.DOWN:
-                y += self.block_size
-            case Direction.RIGHT:
-                x += self.block_size
-        
-        self.head = Point(x, y)
-    
+
     def _update_ui(self):
         self.screen.fill("chartreuse3")
 
-        for point in self.snake:
+        for point in self.snake.body:
             pygame.draw.rect(self.screen, "yellow3", pygame.Rect(point.x, point.y, self.block_size, self.block_size))
             pygame.draw.rect(self.screen, "yellow", pygame.Rect(point.x + 4, point.y + 4, 12, 12))
 
         pygame.draw.rect(self.screen, "red", pygame.Rect(self.food.x, self.food.y, self.block_size, self.block_size))
 
         pygame.display.flip()
-    
+
     def _check_collision(self):
-        if self.head.x > self.w - self.block_size or self.head.x < 0 or self.head.y > self.h - self.block_size or self.head.y < 0:
+        if self.snake.head.x > self.w - self.block_size or self.snake.head.x < 0 or self.snake.head.y > self.h - self.block_size or self.snake.head.y < 0:
             return True
-        
-        if self.head in self.snake[1:]:
+
+        if self.snake.head in self.snake.body[1:]:
             return True
-        
+
         return False
 
