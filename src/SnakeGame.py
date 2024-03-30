@@ -1,4 +1,5 @@
 import pygame
+import random
 from collections import namedtuple
 from enum import Enum
 
@@ -38,4 +39,15 @@ class SnakeGame:
         # Environment settings
         self.score = 0
         self.food = None
+        self._place_food()
+    
+    def _place_food(self):
+        # Generate randomly the food position
+        x = random.randint(0, (self.w - self.block_size) // self.block_size) * self.block_size
+        y = random.randint(0, (self.w - self.block_size) // self.block_size) * self.block_size
+        self.food = Point(x, y)
+
+        # Avoid to generate food where the snake is located
+        if self.food in self.snake:
+            self._place_food()
 
