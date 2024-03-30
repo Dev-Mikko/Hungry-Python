@@ -49,4 +49,20 @@ class SnakeGame:
         # Avoid to generate food where the snake is located
         if self.food in self.snake:
             self._place_food()
+    
+    def _move(self, direction):
+        x = self.head.x
+        y = self.head.y
+        
+        match direction:
+            case Direction.UP:
+                y -= self.block_size
+            case Direction.LEFT:
+                x -= self.block_size
+            case Direction.DOWN:
+                y += self.block_size
+            case Direction.RIGHT:
+                x += self.block_size
+        
+        self.head = Point(x, y)
 
