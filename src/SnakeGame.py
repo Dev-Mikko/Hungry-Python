@@ -26,8 +26,7 @@ class SnakeGame:
 
         self.clock = pygame.time.Clock()
 
-        pygame.display.set_caption('Hungry Python')
-        pygame.display.flip()
+        pygame.display.set_caption("Hungry Python")
 
         # Snake state
         self.direction = Direction.UP
@@ -44,7 +43,7 @@ class SnakeGame:
     def _place_food(self):
         # Generate randomly the food position
         x = random.randint(0, (self.w - self.block_size) // self.block_size) * self.block_size
-        y = random.randint(0, (self.w - self.block_size) // self.block_size) * self.block_size
+        y = random.randint(0, (self.h - self.block_size) // self.block_size) * self.block_size
         self.food = Point(x, y)
 
         # Avoid to generate food where the snake is located
