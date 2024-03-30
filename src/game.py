@@ -1,6 +1,6 @@
 import pygame
 import random
-from Snake import Snake
+from snake import Snake
 from utils import Direction, Point
 
 class SnakeGame:

@@ -1,4 +1,4 @@
-from SnakeGame import SnakeGame
+from game import SnakeGame
 
 if __name__ == "__main__":
     game = SnakeGame()
