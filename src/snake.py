@@ -7,7 +7,7 @@ class Snake:
         self.direction = Direction.UP
         self.block_size = block_size
 
-    def move(self, direction):
+    def move(self, direction: Direction):
         x = self.head.x
         y = self.head.y
 
