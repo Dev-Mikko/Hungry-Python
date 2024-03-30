@@ -65,7 +65,7 @@ class SnakeGame:
                 x += self.block_size
         
         self.head = Point(x, y)
-
+    
     def _update_ui(self):
         self.screen.fill("chartreuse3")
 
@@ -76,4 +76,13 @@ class SnakeGame:
         pygame.draw.rect(self.screen, "red", pygame.Rect(self.food.x, self.food.y, self.block_size, self.block_size))
 
         pygame.display.flip()
+    
+    def _check_collision(self):
+        if self.head.x > self.w - self.block_size or self.head.x < 0 or self.head.y > self.h - self.block_size or self.head.y < 0:
+            return True
+        
+        if self.head in self.snake[1:]:
+            return True
+        
+        return False
 
