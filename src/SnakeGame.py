@@ -40,6 +40,44 @@ class SnakeGame:
         self.food = None
         self._place_food()
     
+    def play_game(self):
+        # Event handler
+        for event in pygame.event.get():
+            # Snake movements handler
+            if event.type == pygame.KEYDOWN:
+                match event.key:
+                    case pygame.K_UP:
+                        if self.direction != Direction.DOWN:
+                            self.direction = Direction.UP
+                    case pygame.K_LEFT:
+                        if self.direction != Direction.RIGHT:
+                            self.direction = Direction.LEFT
+                    case pygame.K_DOWN:
+                        if self.direction != Direction.UP:
+                            self.direction = Direction.DOWN
+                    case pygame.K_RIGHT:
+                        if self.direction != Direction.LEFT:
+                            self.direction = Direction.RIGHT
+        
+        self._move(self.direction)
+        self.snake.insert(0, self.head)
+
+        game_over = False
+        if self._check_collision():
+            game_over = True
+            return game_over, self.score
+
+        if self.head == self.food:
+            self.score += 1
+            self._place_food()
+        else:
+            self.snake.pop()
+
+        self._update_ui()
+        self.clock.tick(self.speed)
+
+        return game_over, self.score
+    
     def _place_food(self):
         # Generate randomly the food position
         x = random.randint(0, (self.w - self.block_size) // self.block_size) * self.block_size
